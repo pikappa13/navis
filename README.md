@@ -2,6 +2,8 @@
 
 # 🚀 Navis — Arcade Survivor
 
+**Italiano** · [English](README.en.md)
+
 [![▶ Gioca ora](https://img.shields.io/badge/▶%20GIOCA%20ORA-online-00f0ff.svg?style=for-the-badge)](https://pikappa13.github.io/navis/)
 [![License: MIT](https://img.shields.io/badge/Licenza-MIT-00f0ff.svg)](LICENSE)
 ![No dependencies](https://img.shields.io/badge/dipendenze-zero-ff2d95.svg)

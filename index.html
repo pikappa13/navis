@@ -52,19 +52,38 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Navis è gratis?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sì, Navis è completamente gratuito e open source (licenza MIT). Non servono account né download." } },
+    { "@type": "Question", "name": "Devo installare qualcosa?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Il gioco gira interamente nel browser: apri la pagina e gioca subito, su computer o smartphone." } },
+    { "@type": "Question", "name": "Si gioca da telefono?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sì. Su mobile trascini per muoverti e fai doppio tocco per scattare; la mira è automatica." } },
+    { "@type": "Question", "name": "Posso modificarlo o riusarlo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Certo: è open source sotto licenza MIT. Il codice è disponibile su GitHub." } }
+  ]
+}
+</script>
 
 <style>
   :root{
     --bg:#05030f; --fg:#e8e6ff; --accent:#00f0ff; --accent2:#ff2d95; --gold:#ffd166;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
+  html,body{min-height:100%;}
   body{
-    background:radial-gradient(circle at 50% 30%, #14093a 0%, #05030f 70%);
+    background:#05030f;
     color:var(--fg);
     font-family:"Trebuchet MS", "Segoe UI", system-ui, sans-serif;
-    display:flex; align-items:center; justify-content:center;
-    min-height:100%; overflow:hidden; touch-action:none;
+    min-height:100%;
+  }
+  .hero{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:8px;
+    background:radial-gradient(circle at 50% 30%, #14093a 0%, #05030f 70%);
   }
   #wrap{
     position:relative; width:min(100vw, 820px, 132vh); aspect-ratio:4/3;
@@ -128,9 +147,35 @@
   .btn.ghost{background:transparent; color:var(--fg); box-shadow:none; border:1px solid rgba(0,240,255,.45); padding:11px 26px; font-size:14px;}
   .btn.ghost:hover{border-color:var(--accent2); color:var(--accent);}
   .row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center;}
+
+  /* ---- SEO / content section below the game ---- */
+  .info{ max-width:880px; margin:0 auto; padding:54px 22px 30px; line-height:1.7; }
+  .info section{ margin-bottom:40px; }
+  .info h2{
+    font-size:clamp(20px,4vw,28px); letter-spacing:1px; margin-bottom:14px; color:var(--accent);
+    text-shadow:0 0 18px rgba(0,240,255,.25);
+  }
+  .info h3{ font-size:clamp(15px,3vw,18px); margin:18px 0 6px; color:var(--accent2); }
+  .info p{ color:#c9c6e6; margin-bottom:12px; }
+  .info ul{ list-style:none; padding:0; }
+  .info li{ color:#c9c6e6; padding:6px 0 6px 26px; position:relative; }
+  .info li::before{ content:"▸"; position:absolute; left:0; color:var(--accent); }
+  .info .lang{ opacity:.55; font-size:13px; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+  .info details{ border:1px solid rgba(0,240,255,.18); border-radius:10px; padding:12px 16px; margin-bottom:10px; background:rgba(20,9,58,.25); }
+  .info summary{ cursor:pointer; font-weight:700; color:var(--fg); }
+  .info details p{ margin-top:10px; }
+  .info a{ color:var(--accent); }
+  .playcta{
+    display:inline-block; margin:6px 0 8px; padding:13px 30px; border-radius:40px; color:#05030f;
+    font-weight:800; letter-spacing:1px; text-decoration:none;
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); box-shadow:0 0 22px rgba(255,45,149,.4);
+  }
+  .foot{ text-align:center; padding:26px 22px 40px; color:#7b7a99; font-size:13px; letter-spacing:1px; border-top:1px solid rgba(0,240,255,.12); }
+  .foot a{ color:var(--accent); text-decoration:none; }
 </style>
 </head>
 <body>
+<div class="hero">
 <div id="wrap">
   <canvas id="game"></canvas>
   <div class="topbtns">
@@ -177,6 +222,68 @@
     </div>
   </div>
 </div>
+</div><!-- /.hero -->
+
+<main class="info">
+  <section>
+    <div class="lang">Italiano</div>
+    <h2>Navis — gioco arcade 2D gratis nel browser</h2>
+    <p><strong>Navis</strong> è un gioco arcade 2D <strong>twin-stick survivor</strong> gratuito che giri
+    direttamente nel browser, senza download né installazione. Pilota la tua navicella tra sciami di nemici
+    al neon, spara senza sosta, raccogli potenziamenti e <strong>sopravvivi alle ondate</strong> affrontando
+    boss sempre più potenti. Disponibile su computer e dispositivi mobili.</p>
+    <a class="playcta" href="#top" onclick="scrollTo(0,0);return false;">▶ Gioca ora</a>
+  </section>
+
+  <section>
+    <h2>Come si gioca</h2>
+    <h3>Da computer</h3>
+    <ul>
+      <li><strong>WASD</strong> o frecce per muovere la nave</li>
+      <li><strong>Mouse</strong> per mirare — il fuoco è automatico</li>
+      <li><strong>Spazio</strong> per lo scatto/schivata, <strong>P</strong> per la pausa</li>
+    </ul>
+    <h3>Da smartphone e tablet</h3>
+    <ul>
+      <li><strong>Trascina</strong> per muovere (mira automatica sul nemico più vicino)</li>
+      <li><strong>Doppio tocco</strong> per lo scatto</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Caratteristiche</h2>
+    <ul>
+      <li>Quattro tipi di nemici con comportamenti diversi e <strong>boss ogni 5 ondate</strong></li>
+      <li>Progressione roguelite: <strong>scegli un potenziamento a ogni ondata</strong></li>
+      <li>Power-up, sistema combo, scatto con schivata e moltiplicatore di punteggio</li>
+      <li>Grafica neon/synthwave, musica ed effetti generati in tempo reale</li>
+      <li>Salvataggio del record, controlli touch, <strong>open source e gratuito</strong></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Domande frequenti</h2>
+    <details><summary>Navis è gratis?</summary><p>Sì, Navis è completamente gratuito e open source (licenza MIT). Non servono account né download.</p></details>
+    <details><summary>Devo installare qualcosa?</summary><p>No. Il gioco gira interamente nel browser: apri la pagina e gioca subito, su computer o smartphone.</p></details>
+    <details><summary>Si gioca da telefono?</summary><p>Sì. Su mobile trascini per muoverti e fai doppio tocco per scattare; la mira è automatica.</p></details>
+    <details><summary>Posso modificarlo o riusarlo?</summary><p>Certo: è open source sotto licenza MIT. Trovi il codice su <a href="https://github.com/pikappa13/navis">GitHub</a>.</p></details>
+  </section>
+
+  <section>
+    <div class="lang">English</div>
+    <h2>Navis — free 2D arcade browser game</h2>
+    <p><strong>Navis</strong> is a free <strong>2D twin-stick arcade survivor</strong> you can play right in
+    your browser — no download, no install. Pilot your ship through neon enemy swarms, shoot non-stop, grab
+    power-ups and <strong>survive endless waves</strong> while facing tougher and tougher bosses. Works on
+    desktop and mobile. Move with <strong>WASD</strong>/drag, aim with the mouse (auto-fire),
+    <strong>dash</strong> to dodge and pick a new upgrade after every wave.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p><strong>Navis — Arcade Survivor</strong> · Sviluppato da <a href="https://github.com/pikappa13">Patrick Battistini</a></p>
+  <p>Open source (MIT) · <a href="https://github.com/pikappa13/navis">Codice su GitHub</a></p>
+</footer>
 
 <script>
 (() => {
