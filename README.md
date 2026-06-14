@@ -1,11 +1,17 @@
 # NEON DRIFT — Arcade Survivor
 
+[![Gioca ora](https://img.shields.io/badge/▶%20GIOCA%20ORA-online-00f0ff.svg?style=for-the-badge)](https://pikappa13.github.io/navis/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-00f0ff.svg)](LICENSE)
 ![No dependencies](https://img.shields.io/badge/dependencies-none-ff2d95.svg)
 ![Single file](https://img.shields.io/badge/build-single--file%20HTML-ffd166.svg)
 
 Un gioco arcade 2D twin-stick in stile neon/synthwave, in un **singolo file HTML**, zero dipendenze.
-Apri `index.html` in un qualsiasi browser e gioca.
+
+### ▶ [Gioca ora nel browser →](https://pikappa13.github.io/navis/)
+
+Oppure apri `index.html` in locale: nessun download, nessuna installazione.
+
+![NEON DRIFT](og-image.png)
 
 ## 🎮 Come si gioca
 - **WASD / frecce** — muovi la nave
