@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <!-- Primary SEO -->
-<title>NEON DRIFT — Gioco Arcade 2D Gratis nel Browser | Twin-Stick Survivor</title>
-<meta name="description" content="NEON DRIFT è un gioco arcade 2D twin-stick gratuito che gira direttamente nel browser: schiva, spara, potenziati a ogni ondata e sconfiggi i boss. Niente download, gioca subito!">
+<title>Navis — Gioco Arcade 2D Gratis nel Browser | Twin-Stick Survivor</title>
+<meta name="description" content="Navis è un gioco arcade 2D twin-stick gratuito che gira direttamente nel browser: schiva, spara, potenziati a ogni ondata e sconfiggi i boss. Niente download, gioca subito!">
 <meta name="keywords" content="gioco arcade, gioco 2d, gioco gratis online, browser game, twin stick shooter, survivor, neon, synthwave, html5 game, gioca gratis senza download, free arcade game">
 <meta name="author" content="Patrick Battistini">
 <meta name="robots" content="index, follow">
@@ -16,19 +16,19 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="NEON DRIFT">
-<meta property="og:title" content="NEON DRIFT — Gioco Arcade 2D Gratis nel Browser">
+<meta property="og:site_name" content="Navis">
+<meta property="og:title" content="Navis — Gioco Arcade 2D Gratis nel Browser">
 <meta property="og:description" content="Twin-stick survivor neon/synthwave gratuito: schiva, spara, potenziati a ogni ondata e batti i boss. Gioca subito nel browser, niente download.">
 <meta property="og:url" content="https://pikappa13.github.io/navis/">
 <meta property="og:image" content="https://pikappa13.github.io/navis/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="NEON DRIFT — gioco arcade 2D twin-stick">
+<meta property="og:image:alt" content="Navis — gioco arcade 2D twin-stick">
 <meta property="og:locale" content="it_IT">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="NEON DRIFT — Gioco Arcade 2D Gratis nel Browser">
+<meta name="twitter:title" content="Navis — Gioco Arcade 2D Gratis nel Browser">
 <meta name="twitter:description" content="Twin-stick survivor neon/synthwave gratuito: schiva, spara, potenziati e batti i boss. Gioca subito nel browser.">
 <meta name="twitter:image" content="https://pikappa13.github.io/navis/og-image.png">
 
@@ -37,8 +37,8 @@
 {
   "@context": "https://schema.org",
   "@type": "VideoGame",
-  "name": "NEON DRIFT",
-  "alternateName": "NEON DRIFT — Arcade Survivor",
+  "name": "Navis",
+  "alternateName": "Navis — Arcade Survivor",
   "description": "Gioco arcade 2D twin-stick survivor in stile neon/synthwave, gratuito e giocabile direttamente nel browser. Schiva, spara, potenziati a ogni ondata e sconfiggi i boss.",
   "url": "https://pikappa13.github.io/navis/",
   "image": "https://pikappa13.github.io/navis/og-image.png",
@@ -137,7 +137,7 @@
   </div>
 
   <div class="overlay" id="menu">
-    <h1>NEON DRIFT</h1>
+    <h1>NAVIS</h1>
     <div class="sub">ARCADE SURVIVOR</div>
     <button class="btn" id="play">GIOCA</button>
     <div class="keys">
@@ -308,7 +308,7 @@ let paused=false;
 let player, bullets, ebullets, enemies, particles, pickups, stars, floaters, boss;
 let score, wave, waveTimer, spawnTimer, shootTimer, screenShake, slowmo, combo, comboTimer;
 let flash, lastBossWave;
-let bestScore = +(localStorage.getItem("neondrift_best")||0);
+let bestScore = +(localStorage.getItem("navis_best")||0);
 
 function reset(){
   player = { x:W/2, y:H/2, r:13, speed:285, hp:5, maxhp:5, fireRate:.22, dmg:1,
@@ -331,7 +331,7 @@ function start(){
 function gameOver(){
   state="over"; stopMusic();
   const rec = score>bestScore;
-  if(rec){ bestScore=score; localStorage.setItem("neondrift_best",bestScore); }
+  if(rec){ bestScore=score; localStorage.setItem("navis_best",bestScore); }
   document.getElementById("finalScore").textContent=score.toLocaleString("it");
   document.getElementById("finalWave").textContent=wave;
   document.getElementById("best").textContent=bestScore.toLocaleString("it");
