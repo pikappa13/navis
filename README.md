@@ -1,5 +1,9 @@
 # NEON DRIFT — Arcade Survivor
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-00f0ff.svg)](LICENSE)
+![No dependencies](https://img.shields.io/badge/dependencies-none-ff2d95.svg)
+![Single file](https://img.shields.io/badge/build-single--file%20HTML-ffd166.svg)
+
 Un gioco arcade 2D twin-stick in stile neon/synthwave, in un **singolo file HTML**, zero dipendenze.
 Apri `index.html` in un qualsiasi browser e gioca.
 
@@ -29,3 +33,9 @@ python -m http.server 8000
 ```
 
 Realizzato con HTML5 Canvas vanilla.
+
+## 📄 Licenza
+
+Questo progetto è **open source** sotto licenza [MIT](LICENSE).
+Sei libero di usarlo, modificarlo e ridistribuirlo, anche per scopi commerciali,
+mantenendo la nota di copyright. Fork e contributi sono benvenuti!
