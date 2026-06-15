@@ -2,7 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 
 <!-- Primary SEO -->
 <title>Navis — Gioco Arcade 2D Gratis nel Browser | Twin-Stick Survivor</title>
@@ -62,7 +65,7 @@
     { "@type": "Question", "name": "Devo installare qualcosa?",
       "acceptedAnswer": { "@type": "Answer", "text": "No. Il gioco gira interamente nel browser: apri la pagina e gioca subito, su computer o smartphone." } },
     { "@type": "Question", "name": "Si gioca da telefono?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sì. Su mobile trascini per muoverti e fai doppio tocco per scattare; la mira è automatica." } },
+      "acceptedAnswer": { "@type": "Answer", "text": "Sì. Su mobile compaiono un joystick virtuale per muoverti e un tasto per lo scatto; la mira è automatica." } },
     { "@type": "Question", "name": "Posso modificarlo o riusarlo?",
       "acceptedAnswer": { "@type": "Answer", "text": "Certo: è open source sotto licenza MIT. Il codice è disponibile su GitHub." } }
   ]
@@ -90,7 +93,46 @@
     border-radius:14px; overflow:hidden;
     box-shadow:0 0 60px rgba(0,240,255,.25), inset 0 0 0 1px rgba(0,240,255,.2);
   }
-  canvas{display:block; width:100%; height:100%; background:#05030f;}
+  canvas{display:block; width:100%; height:100%; background:#05030f; touch-action:none;}
+
+  /* On phones/portrait, let the game fill the screen instead of being a 4:3 strip */
+  @media (max-width:760px), (pointer:coarse){
+    .hero{ padding:0; min-height:100vh; min-height:100dvh; }
+    #wrap{
+      width:100vw; height:100vh; height:100dvh; max-width:none;
+      aspect-ratio:auto; border-radius:0;
+      box-shadow:none;
+    }
+  }
+
+  /* ---- touch controls (joystick + dash), shown only on touch devices ---- */
+  .touchctl{ position:absolute; inset:0; z-index:4; display:none; pointer-events:none; }
+  body.touch .touchctl.on{ display:block; }
+  #stick{
+    position:absolute; left:0; bottom:0; width:42%; height:46%;
+    pointer-events:auto; touch-action:none;
+  }
+  #stickBase{
+    position:absolute; width:120px; height:120px; border-radius:50%;
+    border:2px solid rgba(0,240,255,.35); background:rgba(0,240,255,.06);
+    transform:translate(-50%,-50%); display:none;
+  }
+  #stickKnob{
+    position:absolute; width:54px; height:54px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, rgba(0,240,255,.9), rgba(0,240,255,.35));
+    box-shadow:0 0 18px rgba(0,240,255,.6); transform:translate(-50%,-50%); display:none;
+  }
+  #dashBtn{
+    position:absolute; right:18px; bottom:calc(18px + env(safe-area-inset-bottom,0px));
+    width:88px; height:88px; border-radius:50%; pointer-events:auto; touch-action:none;
+    border:2px solid rgba(255,45,149,.5); color:#fff; background:rgba(255,45,149,.12);
+    font:inherit; font-weight:800; letter-spacing:1px; font-size:13px;
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:2px;
+    box-shadow:0 0 22px rgba(255,45,149,.3);
+  }
+  #dashBtn:active{ transform:scale(.92); background:rgba(255,45,149,.28); }
+  #dashBtn .di{ font-size:26px; line-height:1; }
+  #dashBtn.cooling{ opacity:.4; }
 
   .overlay{
     position:absolute; inset:0; display:flex; flex-direction:column;
@@ -175,12 +217,20 @@
 </style>
 </head>
 <body>
-<div class="hero">
+<div class="hero" id="top">
 <div id="wrap">
   <canvas id="game"></canvas>
   <div class="topbtns">
     <button class="icon" id="pauseBtn">⏸</button>
     <button class="icon" id="mute">🔊</button>
+  </div>
+
+  <div class="touchctl" id="touchctl">
+    <div id="stick">
+      <div id="stickBase"></div>
+      <div id="stickKnob"></div>
+    </div>
+    <button id="dashBtn" type="button"><span class="di">»</span>SCATTO</button>
   </div>
 
   <div class="overlay" id="menu">
@@ -190,7 +240,7 @@
     <div class="keys">
       <div><kbd>WASD</kbd> / <kbd>↑↓←→</kbd> muovi &nbsp;·&nbsp; mira col <b>mouse</b>, fuoco automatico</div>
       <div><kbd>SPAZIO</kbd> scatto (schivata) &nbsp;·&nbsp; <kbd>P</kbd> pausa</div>
-      <div>📱 mobile: <b>trascina</b> per muovere &nbsp;·&nbsp; <b>doppio tocco</b> per scattare</div>
+      <div>📱 mobile: <b>joystick</b> per muovere &nbsp;·&nbsp; tasto <b>SCATTO</b> per schivare · mira automatica</div>
       <div>a ogni ondata scegli un <span class="gold">potenziamento</span> · batti i <span style="color:#ff2d95">BOSS</span> · sopravvivi</div>
     </div>
     <div class="credit">Sviluppato da <b>Patrick Battistini</b></div>
@@ -245,8 +295,8 @@
     </ul>
     <h3>Da smartphone e tablet</h3>
     <ul>
-      <li><strong>Trascina</strong> per muovere (mira automatica sul nemico più vicino)</li>
-      <li><strong>Doppio tocco</strong> per lo scatto</li>
+      <li><strong>Joystick</strong> virtuale (in basso a sinistra) per muovere (mira automatica sul nemico più vicino)</li>
+      <li>Tasto <strong>SCATTO</strong> (in basso a destra) per lo scatto/schivata</li>
     </ul>
   </section>
 
@@ -275,7 +325,7 @@
     <p><strong>Navis</strong> is a free <strong>2D twin-stick arcade survivor</strong> you can play right in
     your browser — no download, no install. Pilot your ship through neon enemy swarms, shoot non-stop, grab
     power-ups and <strong>survive endless waves</strong> while facing tougher and tougher bosses. Works on
-    desktop and mobile. Move with <strong>WASD</strong>/drag, aim with the mouse (auto-fire),
+    desktop and mobile. Move with <strong>WASD</strong> or the on-screen joystick, aim with the mouse (auto-fire),
     <strong>dash</strong> to dodge and pick a new upgrade after every wave.</p>
   </section>
 </main>
@@ -291,8 +341,30 @@
 
 const cvs = document.getElementById("game");
 const ctx = cvs.getContext("2d");
-const W = 800, H = 600;
-cvs.width = W; cvs.height = H;
+
+// ---------- Helpers ----------
+const rand=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const dist2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
+
+// Logical play-field size. On desktop it stays 4:3 (800x600); on phones it
+// adapts to the screen so the game fills the device instead of a tiny strip.
+let W = 800, H = 600;
+
+function fitCanvas(){
+  const r = cvs.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  // pick a logical height ~600 and derive width from the real aspect ratio,
+  // clamped so portrait phones don't get an absurdly narrow field
+  const aspect = r.width / r.height || (4/3);
+  H = 600;
+  W = Math.round(clamp(H * aspect, 360, 1100));
+  cvs.width = Math.round(W * dpr);
+  cvs.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // keep the player inside the new bounds
+  if(player){ player.x = clamp(player.x, player.r, W-player.r); player.y = clamp(player.y, player.r, H-player.r); }
+}
 
 const menuEl = document.getElementById("menu");
 const overEl = document.getElementById("over");
@@ -372,8 +444,10 @@ const mouse = { x: W/2, y: H/2 };
 let usingTouch = false;
 let wantDash = false;
 
+// virtual joystick state (mobile): normalized move vector
+let moveX = 0, moveY = 0;
+
 const MOVE_KEYS=["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"];
-let touchActive=false, lastTap=0, lastTouch=0;
 
 addEventListener("keydown", e => {
   const k=e.key.toLowerCase();
@@ -390,27 +464,85 @@ function toVirtual(cx,cy){
   return { x:(cx-r.left)/r.width*W, y:(cy-r.top)/r.height*H };
 }
 cvs.addEventListener("mousemove", e => {
-  // ignore the synthetic mouse events some mobile browsers fire right after a touch
-  if(performance.now()-lastTouch>800) usingTouch=false;
+  if(usingTouch) return;
   const p=toVirtual(e.clientX,e.clientY); mouse.x=p.x; mouse.y=p.y;
 });
 
-cvs.addEventListener("touchstart", e => {
-  usingTouch=true; touchActive=true; lastTouch=performance.now();
-  const t=e.touches[0]; const p=toVirtual(t.clientX,t.clientY); mouse.x=p.x; mouse.y=p.y;
-  if(lastTouch-lastTap<300 && state==="play" && !paused) wantDash=true;
-  lastTap=lastTouch; e.preventDefault();
-}, {passive:false});
-cvs.addEventListener("touchmove", e => {
-  lastTouch=performance.now();
-  const t=e.touches[0]; const p=toVirtual(t.clientX,t.clientY); mouse.x=p.x; mouse.y=p.y; e.preventDefault();
-}, {passive:false});
-cvs.addEventListener("touchend", e => { touchActive=false; lastTouch=performance.now(); e.preventDefault(); }, {passive:false});
+// ---- Virtual joystick (mobile) ----
+const stickZone = document.getElementById("stick");
+const stickBase = document.getElementById("stickBase");
+const stickKnob = document.getElementById("stickKnob");
+const dashBtn   = document.getElementById("dashBtn");
+const touchCtl  = document.getElementById("touchctl");
+const STICK_R = 56;            // max knob travel (px)
+let stickId = null, baseX = 0, baseY = 0;
 
-// ---------- Helpers ----------
-const rand=(a,b)=>a+Math.random()*(b-a);
-const clamp=(v,a,b)=>v<a?a:v>b?b:v;
-const dist2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
+function showStick(x,y){
+  stickBase.style.left = stickKnob.style.left = x+"px";
+  stickBase.style.top  = stickKnob.style.top  = y+"px";
+  stickBase.style.display = stickKnob.style.display = "block";
+}
+function moveStick(x,y){
+  let dx=x-baseX, dy=y-baseY, L=Math.hypot(dx,dy);
+  if(L>STICK_R){ dx=dx/L*STICK_R; dy=dy/L*STICK_R; L=STICK_R; }
+  stickKnob.style.left=(baseX+dx)+"px"; stickKnob.style.top=(baseY+dy)+"px";
+  const dead=6;
+  if(L>dead){ const n=Math.max(L,1); moveX=dx/n; moveY=dy/n; } else { moveX=0; moveY=0; }
+}
+function hideStick(){ stickBase.style.display=stickKnob.style.display="none"; moveX=0; moveY=0; stickId=null; }
+
+function stickStart(e){
+  usingTouch=true; setTouchMode(true);
+  const t=e.changedTouches?e.changedTouches[0]:e;
+  stickId = t.identifier!=null?t.identifier:"mouse";
+  const r=stickZone.getBoundingClientRect();
+  baseX=t.clientX-r.left; baseY=t.clientY-r.top;
+  showStick(baseX,baseY); moveStick(baseX,baseY);
+  e.preventDefault();
+}
+function stickMove(e){
+  if(stickId==null) return;
+  const r=stickZone.getBoundingClientRect();
+  const list=e.changedTouches||[e];
+  for(const t of list){
+    const id=t.identifier!=null?t.identifier:"mouse";
+    if(id===stickId){ moveStick(t.clientX-r.left, t.clientY-r.top); break; }
+  }
+  e.preventDefault();
+}
+function stickEnd(e){
+  const list=e.changedTouches||[e];
+  for(const t of list){
+    const id=t.identifier!=null?t.identifier:"mouse";
+    if(id===stickId){ hideStick(); break; }
+  }
+  e.preventDefault();
+}
+stickZone.addEventListener("touchstart", stickStart, {passive:false});
+stickZone.addEventListener("touchmove",  stickMove,  {passive:false});
+stickZone.addEventListener("touchend",   stickEnd,   {passive:false});
+stickZone.addEventListener("touchcancel",stickEnd,   {passive:false});
+
+function fireDash(e){
+  usingTouch=true; setTouchMode(true);
+  if(state==="play" && !paused) wantDash=true;
+  if(e) e.preventDefault();
+}
+dashBtn.addEventListener("touchstart", fireDash, {passive:false});
+dashBtn.addEventListener("click", e=>{ if(!usingTouch) return; fireDash(e); });
+
+// Reveal touch controls the first time a touch happens (so desktop stays clean)
+function setTouchMode(on){
+  if(on) document.body.classList.add("touch");
+  updateTouchCtl();
+}
+// Touch controls (joystick + dash) only while actively playing.
+function updateTouchCtl(){
+  const show = document.body.classList.contains("touch") && state==="play" && !paused;
+  touchCtl.classList.toggle("on", show);
+  if(!show) hideStick();
+}
+addEventListener("touchstart", ()=>{ document.body.classList.add("touch"); updateTouchCtl(); }, {passive:true, once:true});
 
 // ---------- State ----------
 let state="menu";          // menu | play | over
@@ -437,6 +569,7 @@ function start(){
   pauseBtn.style.display="";
   audio(); startMusic(); blip(660,.1,"sine",.15);
   lastT=performance.now();
+  updateTouchCtl();
 }
 function gameOver(){
   state="over"; stopMusic();
@@ -449,18 +582,21 @@ function gameOver(){
   upgradeEl.classList.add("hidden");
   overEl.classList.remove("hidden"); pauseBtn.style.display="none";
   noise(.5,.25); screenShake=24;
+  updateTouchCtl();
 }
 function togglePause(){
   if(state!=="play") return;
   paused=!paused;
   pauseEl.classList.toggle("hidden",!paused);
   pauseBtn.textContent = paused?"▶":"⏸";
+  updateTouchCtl();
 }
 function goMenu(){
   state="menu"; paused=false; stopMusic();
   menuEl.classList.remove("hidden");
   pauseEl.classList.add("hidden"); upgradeEl.classList.add("hidden"); overEl.classList.add("hidden");
   pauseBtn.style.display="none"; pauseBtn.textContent="⏸";
+  updateTouchCtl();
 }
 playBtn.onclick=start; againBtn.onclick=start;
 resumeBtn.onclick=togglePause; pauseBtn.onclick=togglePause;
@@ -510,6 +646,7 @@ function showUpgrades(){
   upTitleEl.textContent="ONDA "+wave+" — POTENZIAMENTO";
   upgradeEl.classList.remove("hidden");
   blip(720,.12,"sine",.16);
+  updateTouchCtl();
 }
 function chooseUpgrade(u){
   u.apply(player);
@@ -517,6 +654,7 @@ function chooseUpgrade(u){
   state="play"; paused=false; pauseBtn.style.display=""; pauseBtn.textContent="⏸";
   lastT=performance.now();
   burst(player.x,player.y,"#00f0ff",22,260,.6); blip(960,.12,"sine",.18);
+  updateTouchCtl();
 }
 
 // ---------- FX ----------
@@ -603,9 +741,8 @@ function update(dt){
 
   // ----- movement intent -----
   let mx=0,my=0;
-  if(usingTouch && touchActive){
-    const dx=mouse.x-player.x, dy=mouse.y-player.y, L=Math.hypot(dx,dy);
-    if(L>6){ mx=dx/L; my=dy/L; }
+  if(usingTouch){
+    mx=moveX; my=moveY;   // virtual joystick vector (already normalized)
   } else {
     if(keys["a"]||keys["arrowleft"]) mx-=1;
     if(keys["d"]||keys["arrowright"]) mx+=1;
@@ -937,12 +1074,16 @@ function drawHUD(){
   if(player.mult>1){ ctx.fillText("MULTI x"+player.mult,W-18,py); py+=18; }
   if(player.fireRate<.22){ ctx.fillText("RAPID FIRE",W-18,py); }
 
-  // dash cooldown bar (bottom-left)
-  ctx.textAlign="left"; ctx.fillStyle="rgba(232,230,255,.6)"; ctx.font="11px Trebuchet MS, sans-serif";
-  ctx.fillText("SCATTO",18,H-30);
-  ctx.fillStyle="rgba(0,240,255,.2)"; ctx.fillRect(18,H-16,90,5);
-  ctx.fillStyle=player.dashCd<=0?"#00f0ff":"#0a6b78";
-  ctx.fillRect(18,H-16,90*(1-player.dashCd/player.dashCdMax),5);
+  // dash cooldown bar (bottom-left) — hidden on touch (the dash button shows it)
+  if(!usingTouch){
+    ctx.textAlign="left"; ctx.fillStyle="rgba(232,230,255,.6)"; ctx.font="11px Trebuchet MS, sans-serif";
+    ctx.fillText("SCATTO",18,H-30);
+    ctx.fillStyle="rgba(0,240,255,.2)"; ctx.fillRect(18,H-16,90,5);
+    ctx.fillStyle=player.dashCd<=0?"#00f0ff":"#0a6b78";
+    ctx.fillRect(18,H-16,90*(1-player.dashCd/player.dashCdMax),5);
+  } else {
+    dashBtn.classList.toggle("cooling", player.dashCd>0);
+  }
 
   // boss HP bar
   if(boss){
@@ -956,6 +1097,12 @@ function drawHUD(){
 
 pauseBtn.style.display="none";   // only shown during play
 reset();
+fitCanvas();
+// re-fit on resize / orientation change (debounced via rAF)
+let resizePending=false;
+function onResize(){ if(resizePending) return; resizePending=true; requestAnimationFrame(()=>{ resizePending=false; fitCanvas(); }); }
+addEventListener("resize", onResize);
+addEventListener("orientationchange", onResize);
 requestAnimationFrame(loop);
 
 })();

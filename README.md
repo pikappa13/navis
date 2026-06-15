@@ -70,8 +70,8 @@ Sopravvivi alle ondate, potenziati e sconfiggi i boss. Più combo fai, più punt
 ### Mobile
 | Comando | Azione |
 |---|---|
-| Trascina | Muovi la nave (mira automatica sul nemico più vicino) |
-| Doppio tocco | Scatto / schivata |
+| Joystick (in basso a sinistra) | Muovi la nave (mira automatica sul nemico più vicino) |
+| Tasto **SCATTO** (in basso a destra) | Scatto / schivata |
 
 ## ⚙️ Meccaniche di gioco
 
